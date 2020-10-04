@@ -1,0 +1,70 @@
+body, html {
+    margin: 0;
+    font-family: sans-serif;
+}
+
+h1 {
+    text-align: center;
+    color: red;
+}
+
+h3 {
+    text-align: center;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%
+}
+
+table, th, td {
+    border: 1px solid black;
+}
+
+th {
+    height: 25px;
+}
+
+td {
+    text-align: center;
+    padding: 5px;
+}
+
+.form {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+#content {
+    width: 73.75%;
+}
+
+#update {
+    width: 60%;
+}
+
+#due {
+    width: 45%;
+    margin-left: 15px;
+}
+
+.date_form{
+    margin: 0 auto;
+    width: 280px;
+}
+
+.content {
+    margin: 0 auto;
+    width: 500px;
+}
+
+.update_form {
+    margin: 0 auto;
+    width: 500px;
+}
+
+p {
+    text-align: center;
+    padding: 10px;
+}
+
