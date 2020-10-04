@@ -68,3 +68,30 @@ p {
     padding: 10px;
 }
 
+.current_btn {
+    border: 1px solid grey;
+    text-decoration: none;
+    color: white;
+    background-color: grey;
+    padding: 2px;
+    margin:  1px;
+}
+
+.btn {
+    border: 1px solid grey;
+    text-decoration: none;
+    color: grey;
+    padding: 2px;
+    margin:  1px;
+}
+
+a:link.action, a:visited.action {
+    text-decoration: none;
+    color: grey;
+}
+
+a:hover.action {
+    text-decoration: none;
+    color: white;
+    background-color: grey;
+}

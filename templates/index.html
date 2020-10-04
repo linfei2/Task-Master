@@ -26,12 +26,12 @@
                         </td>
                     {% else %}
                         <td>
-                            <a href="/due/{{task.id}}">Add</a>
+                            <a class="action" href="/due/{{task.id}}">Add</a>
                         </td>
                     {% endif %}
                     <td>
-                        <a href="/delete/{{task.id}}">Delete</a><br>
-                        <a href="/update/{{task.id}}">Update</a>
+                        <a class="action" href="/delete/{{task.id}}">Complete</a><br>
+                        <a class="action" href="/update/{{task.id}}">Update</a>
                     </td>
                 </tr>
         {% endfor %}
@@ -41,10 +41,15 @@
         <input type="text" name=content id="content">
         <input type="submit" value="Add task">
     </form>
-    {% for page_num in tasks.iter_pages() %}
+    {% for page_num in tasks.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
         {% if page_num %}
-            <a href="{{ url_for('index', page=page_num) }}">{{page_num}}</a>
+            {% if tasks.page == page_num %}
+            <a class="current_btn" href="{{ url_for('index', page=page_num) }}">{{page_num}}</a>
+            {% else %}
+            <a class="btn" href="{{ url_for('index', page=page_num) }}">{{page_num}}</a>
+            {% endif %}
         {% else %}
+            ...
         {% endif %}
     {% endfor %}
 </div>
