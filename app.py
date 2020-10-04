@@ -30,7 +30,8 @@ def index():
         except:
             return 'There was an error'
     else:
-        tasks = Todo.query.order_by(Todo.date_created.desc()).all()
+        page = request.args.get('page', 1, type=int)
+        tasks = Todo.query.order_by(Todo.date_created.desc()).paginate(page=page, per_page=8)
         return render_template('index.html', tasks=tasks)
 
 
