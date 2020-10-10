@@ -4,12 +4,15 @@ body, html {
 }
 
 h1 {
-    text-align: center;
     color: red;
 }
 
-h3 {
+h1, h2, h3 {
     text-align: center;
+}
+
+h2 {
+    margin-left: 8px;
 }
 
 table {
@@ -68,21 +71,31 @@ p {
     padding: 10px;
 }
 
-.current_btn {
+.current_btn, .fcurrent_btn {
     border: 1px solid grey;
     text-decoration: none;
     color: white;
     background-color: grey;
     padding: 2px;
-    margin:  1px;
+    margin: 2px;
 }
 
-.btn {
+.fcurrent_btn {
+    position: relative;
+    top: 10px;
+}
+
+.btn, .fbtn {
     border: 1px solid grey;
     text-decoration: none;
     color: grey;
     padding: 2px;
-    margin:  1px;
+    margin: 2px;
+}
+
+.fbtn {
+    position: relative;
+    top: 10px;
 }
 
 a:link.action, a:visited.action {
@@ -94,4 +107,8 @@ a:hover.action {
     text-decoration: none;
     color: white;
     background-color: grey;
+}
+
+.filter_form {
+    padding: 10px;
 }

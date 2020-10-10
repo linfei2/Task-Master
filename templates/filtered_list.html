@@ -7,7 +7,8 @@
 {% block body %}
 <div class="content">
     {% if not tasks.items %}
-        <h2>No tasks yet. Create one below.</h2>
+        <h2>No tasks meeting filter criteria</h2>
+        <h1>¯\_(ツ)_/¯</h1>
     {% else %}
         <table>
             <tr>
@@ -37,29 +38,16 @@
         {% endfor %}
     {% endif %}
     </table>
-    <form action="/" method="POST" class="form">
-        <input type="text" name=content id="content">
-        <input type="submit" value="Add task">
-    </form>
     {% for page_num in tasks.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
         {% if page_num %}
             {% if tasks.page == page_num %}
-            <a class="current_btn" href="{{ url_for('index', page=page_num) }}">{{page_num}}</a>
+            <a class="fcurrent_btn" href="{{ url_for('index', page=page_num) }}">{{page_num}}</a>
             {% else %}
-            <a class="btn" href="{{ url_for('index', page=page_num) }}">{{page_num}}</a>
+            <a class="fbtn" href="{{ url_for('index', page=page_num) }}">{{page_num}}</a>
             {% endif %}
         {% else %}
             ...
         {% endif %}
     {% endfor %}
-    <h4>Filter by:</h4>
-    <form action="/filter" method="POST" class="filter_form">
-        <input type="radio" id="due_date" name="filter" value="due_date">
-        <label for="due_date">Due date</label>
-        <input type="radio" id="date_created" name="filter" value="date_created">
-        <label for="date_created">Date created</label><br>
-        <input type="date" id="filter_date" name="filter_date">
-        <input type="submit" value="Submit">
-    </form>
 </div>
 {% endblock %}
