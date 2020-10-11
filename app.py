@@ -32,7 +32,7 @@ def index():
             return 'There was an error'
     else:
         page = request.args.get('page', 1, type=int)
-        tasks = Todo.query.order_by(Todo.date_created.desc()).paginate(page=page, per_page=8)
+        tasks = Todo.query.order_by(Todo.date_created.desc()).paginate(page=page, per_page=5)
         return render_template('index.html', tasks=tasks)
 
 
@@ -80,15 +80,18 @@ def filter():
         if option == 'due_date':
             date = request.form['filter_date']
             date_object = datetime.strptime(date, "%Y-%m-%d")
-            page = request.args.get('page', 1, type=int)
-            tasks = Todo.query.filter_by(due_date=date_object).paginate(page=page, per_page=8)
-            return render_template('filtered_list.html', tasks=tasks)
+            tasks = Todo.query.filter_by(due_date=date_object).all()
+            return render_template('filtered_list.html', tasks=tasks, option=option, date=date)
+
         else:
             date = request.form['filter_date']
             date_object = datetime.strptime(date, "%Y-%m-%d")
-            page = request.args.get('page', 1, type=int)
-            tasks = Todo.query.filter(func.DATE(Todo.date_created) == date_object.date()).paginate(page=page, per_page=8)
-            return render_template('filtered_list.html', tasks=tasks)
+            tasks = Todo.query.filter(func.DATE(Todo.date_created) == date_object.date()).all()
+            return render_template('filtered_list.html', tasks=tasks, option=option, date=date)
+
+    else:
+            return render_template('filtered_list.html')
+
 
 
 if __name__ == "__main__":

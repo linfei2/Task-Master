@@ -1,13 +1,9 @@
 body, html {
     margin: 0;
-    font-family: sans-serif;
+    font-family: arial;
 }
 
-h1 {
-    color: red;
-}
-
-h1, h2, h3 {
+h1, h2, h3, h5 {
     text-align: center;
 }
 
@@ -17,7 +13,7 @@ h2 {
 
 table {
     border-collapse: collapse;
-    width: 100%
+    width: 100%;
 }
 
 table, th, td {
@@ -25,10 +21,13 @@ table, th, td {
 }
 
 th {
+    font-size: 15px;
     height: 25px;
+    text-align: center;
 }
 
 td {
+    font-size: 15px;
     text-align: center;
     padding: 5px;
 }
@@ -39,7 +38,7 @@ td {
 }
 
 #content {
-    width: 73.75%;
+    width: 80%;
 }
 
 #update {
@@ -47,18 +46,13 @@ td {
 }
 
 #due {
-    width: 45%;
+    width: 60%;
     margin-left: 15px;
 }
 
 .date_form{
     margin: 0 auto;
     width: 280px;
-}
-
-.content {
-    margin: 0 auto;
-    width: 500px;
 }
 
 .update_form {
@@ -71,14 +65,6 @@ p {
     padding: 10px;
 }
 
-.current_btn, .fcurrent_btn {
-    border: 1px solid grey;
-    text-decoration: none;
-    color: white;
-    background-color: grey;
-    padding: 2px;
-    margin: 2px;
-}
 
 .fcurrent_btn {
     position: relative;
@@ -88,9 +74,6 @@ p {
 .btn, .fbtn {
     border: 1px solid grey;
     text-decoration: none;
-    color: grey;
-    padding: 2px;
-    margin: 2px;
 }
 
 .fbtn {
@@ -101,12 +84,6 @@ p {
 a:link.action, a:visited.action {
     text-decoration: none;
     color: grey;
-}
-
-a:hover.action {
-    text-decoration: none;
-    color: white;
-    background-color: grey;
 }
 
 .filter_form {

@@ -1,11 +1,20 @@
 {% extends 'base.html' %}
-
+{% block head %}
+<div class="container-fluid p-3 mb-4 bg-dark text-white">
+    <h1>Task Master</h1>
+    <p class="small font-italic">Keep track of your tasks</p>
+</div>
+{% endblock %}
 {% block body %}
-<h3>Update your task below</h3>
 <div class="update_form">
-    <form action="/update/{{task.id}}" method="POST">
-        <input type="text" name=content id="update" value="{{task.content}}">
-        <input type="submit" value="Update">
-    </form>
+    <div class="row"></div>
+        <div class="col-12 text-center">
+            <h5>Update your task below</h5><br>
+            <form action="/update/{{task.id}}" method="POST">
+                <input type="text" name=content id="update" value="{{task.content}}">
+                <input type="submit" value="Update" class="btn btn-outline-dark px-2 py-0">
+            </form>
+        </div>
+    </div>
 </div>
 {% endblock %}

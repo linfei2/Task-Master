@@ -1,53 +1,52 @@
 {% extends 'base.html' %}
 
 {% block head %}
-<h1>Task Master</h1>
+<div class="container-fluid p-3 mb-3 bg-dark text-white">
+    <h1>Task Master</h1>
+    <p class="small font-italic">Keep track of your tasks</p>
+</div>
 {% endblock %}
 
 {% block body %}
-<div class="content">
-    {% if not tasks.items %}
-        <h2>No tasks meeting filter criteria</h2>
-        <h1>¯\_(ツ)_/¯</h1>
-    {% else %}
-        <table>
-            <tr>
-                <th>Task</th>
-                <th>Date Created</th>
-                <th>Due Date</th>
-                <th>Action</th>
-            </tr>
-            {% for task in tasks.items %}
-                <tr>
-                    <td>{{ task.content }}</td>
-                    <td>{{ task.date_created.date() }}</td>
-                    {% if task.due_date %}
-                        <td>
-                            {{task.due_date.date()}}
-                        </td>
-                    {% else %}
-                        <td>
-                            <a class="action" href="/due/{{task.id}}">Add</a>
-                        </td>
-                    {% endif %}
-                    <td>
-                        <a class="action" href="/delete/{{task.id}}">Complete</a><br>
-                        <a class="action" href="/update/{{task.id}}">Update</a>
-                    </td>
-                </tr>
-        {% endfor %}
-    {% endif %}
-    </table>
-    {% for page_num in tasks.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
-        {% if page_num %}
-            {% if tasks.page == page_num %}
-            <a class="fcurrent_btn" href="{{ url_for('index', page=page_num) }}">{{page_num}}</a>
-            {% else %}
-            <a class="fbtn" href="{{ url_for('index', page=page_num) }}">{{page_num}}</a>
-            {% endif %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+        {% if tasks|length < 1 %}
+            <h2>No tasks meeting filter criteria</h2><br>
+            <h1>¯\_(ツ)_/¯</h1>
         {% else %}
-            ...
+            <p class="small text-left">Applied filter: {{option}} {{date}}</p>
+            <table class="table table-bordered">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Task</th>
+                        <th>Date Created</th>
+                        <th>Due Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                {% for task in tasks %}
+                    <tr>
+                        <td>{{ task.content }}</td>
+                        <td>{{ task.date_created.date() }}</td>
+                        {% if task.due_date %}
+                            <td>
+                                {{task.due_date.date()}}
+                            </td>
+                        {% else %}
+                            <td>
+                                <a class="action" href="/due/{{task.id}}">Add</a>
+                            </td>
+                        {% endif %}
+                        <td>
+                            <a class="action" href="/delete/{{task.id}}">Complete</a><br>
+                            <a class="action" href="/update/{{task.id}}">Update</a>
+                        </td>
+                    </tr>
+            {% endfor %}
         {% endif %}
-    {% endfor %}
+            </table>
+        </div>
+    </div>
 </div>
 {% endblock %}
