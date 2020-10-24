@@ -8,75 +8,81 @@
 {% endblock %}
 
 {% block body %}
-<div class="container">
-    <div class="row">
-        <div class="col-9">
-        {% if not tasks.items %}
-            <h2>No tasks yet. Create one below.</h2>
-        {% else %}
-            <table class="table table-bordered">
-                <thead class="thead-light">
-                    <tr>
-                        <th>Task</th>
-                        <th>Date Created</th>
-                        <th>Due Date</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                {% for task in tasks.items %}
-                    <tr>
-                        <td>{{ task.content }}</td>
-                        <td>{{ task.date_created.date() }}</td>
-                        {% if task.due_date %}
-                            <td>
-                                {{task.due_date.date()}}
-                            </td>
-                        {% else %}
-                            <td>
-                                <a class="action" href="/due/{{task.id}}">Add</a>
-                            </td>
-                        {% endif %}
-                        <td>
-                            <a class="action" href="/delete/{{task.id}}">Complete</a><br>
-                            <a class="action" href="/update/{{task.id}}">Update</a>
-                        </td>
-                    </tr>
-            {% endfor %}
-        {% endif %}
-        </table>
-        <form action="/" method="POST" class="form">
-            <input type="text" name=content id="content">
-            <input type="submit" value="Add task" class="btn btn-outline-dark pr-2 pl-2 pb-0 pt-0">
-        </form>
-        {% for page_num in tasks.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
-            {% if page_num %}
-                {% if tasks.page == page_num %}
-                    <a class="btn btn-dark mb-4 py-1 px-2" href="{{ url_for('index', page=page_num) }}">{{page_num}}</a>
+    {% if current_user.is_authenticated %}
+        <div class="container">
+            <div class="row">
+                <div class="col-9">
+                {% if not tasks.items %}
+                    <h2>No tasks yet. Create one below.</h2>
                 {% else %}
-                    <a class="btn btn-outline-dark mb-4 py-1 px-2" href="{{ url_for('index', page=page_num) }}">{{page_num}}</a>
+                    <table class="table table-bordered">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>Task</th>
+                                <th>Date Created</th>
+                                <th>Due Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        {% for task in tasks.items %}
+                            <tr>
+                                <td>{{ task.content }}</td>
+                                <td>{{ task.date_created.date() }}</td>
+                                {% if task.due_date %}
+                                    <td>
+                                        {{task.due_date.date()}}
+                                    </td>
+                                {% else %}
+                                    <td>
+                                        <a class="action" href="/due/{{task.id}}">Add</a>
+                                    </td>
+                                {% endif %}
+                                <td>
+                                    <a class="action" href="/delete/{{task.id}}">Complete</a><br>
+                                    <a class="action" href="/update/{{task.id}}">Update</a>
+                                </td>
+                            </tr>
+                    {% endfor %}
                 {% endif %}
-            {% else %}
-                ...
-            {% endif %}
-        {% endfor %}
-        </div>
-        <div class="col-3">
-            <h6 class>Filter by:</h6>
-            <form action="/filter" method="POST" class="filter_form">
-                <div class="form-check pb-1 mb-1">
-                    <label class="form-check-label">
-                    <input type="radio" class="form-check-input" name="filter" value="due_date">Due date
-                    </label>
+                </table>
+                <form action="/" method="POST" class="form">
+                    <input type="text" name=content id="content">
+                    <input type="submit" value="Add task" class="btn btn-outline-dark pr-2 pl-2 pb-0 pt-0">
+                </form>
+                {% for page_num in tasks.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+                    {% if page_num %}
+                        {% if tasks.page == page_num %}
+                            <a class="btn btn-dark mb-4 py-1 px-2" href="{{ url_for('index', page=page_num) }}">{{page_num}}</a>
+                        {% else %}
+                            <a class="btn btn-outline-dark mb-4 py-1 px-2" href="{{ url_for('index', page=page_num) }}">{{page_num}}</a>
+                        {% endif %}
+                    {% else %}
+                        ...
+                    {% endif %}
+                {% endfor %}
                 </div>
-                <div class="form-check pb-1 mb-1">
-                    <label class="form-check-label">
-                    <input type="radio" class="form-check-input" name="filter" value="date_created">Date created
-                    </label>
+                <div class="col-3">
+                    <h6 class>Filter by:</h6>
+                    <form action="/filter" method="POST" class="filter_form">
+                        <div class="form-check pb-1 mb-1">
+                            <label class="form-check-label">
+                            <input type="radio" class="form-check-input" name="filter" value="due_date">Due date
+                            </label>
+                        </div>
+                        <div class="form-check pb-1 mb-1">
+                            <label class="form-check-label">
+                            <input type="radio" class="form-check-input" name="filter" value="date_created">Date created
+                            </label>
+                        </div>
+                        <input type="date" id="filter_date" name="filter_date">
+                        <input type="submit" value="Filter" class="btn btn-outline-dark px-2 py-0">
+                    </form>
                 </div>
-                <input type="date" id="filter_date" name="filter_date">
-                <input type="submit" value="Filter" class="btn btn-outline-dark px-2 py-0">
-            </form>
+            </div>
         </div>
-    </div>
-</div>
+    {% else %}
+        <form action="/login" method="POST">
+            <input type="submit" value="Github login" />
+        </form>
+    {% endif %}
 {% endblock %}

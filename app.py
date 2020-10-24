@@ -1,12 +1,40 @@
-from flask import Flask, render_template, request, redirect
+import os
+from flask import Flask, render_template, request, redirect, url_for
+from flask_dance.contrib.github import make_github_blueprint, github
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func
 from datetime import datetime
+from flask_login import UserMixin, login_user, logout_user, current_user, LoginManager, login_required
+from flask_dance.consumer.storage.sqla import OAuthConsumerMixin, SQLAlchemyStorage
+from flask_dance.consumer import oauth_authorized
+from sqlalchemy.orm.exc import NoResultFound
 
 
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///new.db'
+app.config['SECRET_KEY'] = os.urandom(24)
+blueprint = make_github_blueprint(
+     client_id = os.environ.get("CLIENT_ID"),
+     client_secret = os.environ.get("CLIENT_SECRET")
+)
+app.register_blueprint(blueprint, url_prefix="/login")
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 db = SQLAlchemy(app)
+login_manager = LoginManager(app)
+
+class User(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(50), unique=True)
+    email = db.Column(db.String(200), unique=True)
+    tasks = db.relationship('Todo', backref='author', lazy=True)
+
+    def __repr__(self):
+        return f"User('{self.username}','{self.email}')"
+
+
+class OAuth(OAuthConsumerMixin, db.Model):
+    user_id = db.Column(db.Integer, db.ForeignKey(User.id))
+    user = db.relationship(User)
 
 
 class Todo(db.Model):
@@ -14,16 +42,24 @@ class Todo(db.Model):
     content = db.Column(db.String(200), nullable=False)
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
     due_date = db.Column(db.DateTime, nullable=True)
+    user_id = db.Column(db.Integer, db.ForeignKey(User.id))
 
     def __repr__(self):
         return '<Task %r>' % self.id
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+blueprint.storage = SQLAlchemyStorage(OAuth, db.session, user=current_user, user_required=False)
 
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
         task_content = request.form['content']
-        new_task = Todo(content=task_content)
+        new_task = Todo(content=task_content, author=current_user)
         try:
             db.session.add(new_task)
             db.session.commit()
@@ -34,6 +70,39 @@ def index():
         page = request.args.get('page', 1, type=int)
         tasks = Todo.query.order_by(Todo.date_created.desc()).paginate(page=page, per_page=5)
         return render_template('index.html', tasks=tasks)
+
+
+@app.route('/login', methods=['POST'])
+def login():
+    if not github.authorized:
+        return redirect(url_for("github.login"))
+    return redirect(url_for('/'))
+
+
+@oauth_authorized.connect_via(blueprint)
+def logged_in(blueprint, token):
+    account_info = blueprint.session.get("/user")
+    if account_info.ok:
+        account_info_json = account_info.json()
+        username = account_info_json["login"]
+        query = User.query.filter_by(username=username)
+
+        try:
+            user = query.one()
+        except NoResultFound:
+            user = User()
+            user.username = account_info_json['login']
+            db.session.add(user)
+            db.session.commit()
+
+        login_user(user)
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect('/')
 
 
 @app.route('/delete/<int:id>')
@@ -72,6 +141,7 @@ def set_due_date(id):
         return redirect('/')
     else:
         return render_template('set_due_date.html', task=task)
+
 
 @app.route('/filter', methods=['GET', 'POST'])
 def filter():
